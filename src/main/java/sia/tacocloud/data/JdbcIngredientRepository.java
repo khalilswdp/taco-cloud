@@ -2,6 +2,7 @@ package sia.tacocloud.data;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import sia.tacocloud.Ingredient;
 
@@ -28,7 +29,16 @@ public class JdbcIngredientRepository implements IngredientRepository {
     @Override
     public Ingredient findOne(String id) {
         return jdbc.queryForObject("select id, name, type from Ingredient where id=?",
-                this::mapRowToIngredient, id);
+                new RowMapper<Ingredient>() {
+                    @Override
+                    public Ingredient mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return new Ingredient(
+                                rs.getString("id"),
+                                rs.getString("name"),
+                                Ingredient.Type.valueOf(rs.getString("type")));
+                    }
+                }
+                , id);
     }
 
     @Override
