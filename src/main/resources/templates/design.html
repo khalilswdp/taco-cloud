@@ -10,7 +10,12 @@
 <h1>Design your taco!</h1>
 <img th:src="@{images/TacoCloud.jpeg}"/>
 
-<form method="POST" th:object="${design}">
+<form method="POST" th:object="${taco}">
+
+    <span class="validationError"
+          th:if="${#fields.hasErrors('ingredients')}"
+          th:errors="*{ingredients}">Ingredient Error</span>
+
     <div class="grid">
         <div class="ingredient-group" id="wraps">
             <h3>Designate your wrap:</h3>
